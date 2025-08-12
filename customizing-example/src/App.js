@@ -12,9 +12,10 @@ function App() {
             <Nav />
             <Promo />
             <main>
-                <Intro1 />
-                <Intro2 />
-                <Intro3 />
+              
+                <Intro1  greet='Hello, Curtis' color="black" />
+                <Intro2  greet='Hello, Curtis' />
+                <Intro3  greet='Hello, Curtis' />
             </main>
         </div>
     );
