@@ -2,6 +2,7 @@ import axios from 'axios';
 import{useState, useEffect} from 'react';
 import React from 'react';
 import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
 import {BrowserRouter,Routes,Route} from 'react-router-dom';
  
 
@@ -27,6 +28,7 @@ function App() {
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Dashboard />} />
+      <Route path="/login" element={<Login />} />
     </Routes>
   </BrowserRouter>
  );
