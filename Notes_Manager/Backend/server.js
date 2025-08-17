@@ -14,23 +14,39 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // all the task from the db
-app.get("/tasks",(req,res)=>{
-    const sql="SELECT * FROM tasks";// your tasks table
-    const task = db.query(sql, (err, results) => {
-       if (!task) return res.status(404).send('Task not found')
-        
-        res.json({ task: results[0] });
-    });
-})
+app.get("/tasks", (req, res) => {
+  const sql = "SELECT * FROM tasks"; // your tasks table
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching tasks:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
 
-// Define your routes here and select task from the database
+    if (results.length === 0) {
+      return res.status(404).json({ message: "No tasks found" });
+    }
+
+    // ✅ Send all tasks directly as an array
+    res.json(results);
+  });
+});
+
+// Define your routes here and select task from the database and show the recent task added to the database
 
 app.get("/tasks/:id", (req, res) => {
-    const sql = "SELECT * FROM tasks WHERE id = ?";
-    const task = db.query(sql, [req.params.id], (err, results) => {
-       if (!task) return res.status(404).send('Task not found');
-        res.json({ task: results[0] });
-    });
+  const sql = "SELECT * FROM tasks WHERE id = ?";
+  db.query(sql, [req.params.id], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Database error", details: err });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    // ✅ return directly
+    res.json(results[0]);
+  });
 });
 
 // Create a new task
@@ -44,6 +60,33 @@ app.post("/tasks", (req, res) => {
             return;
         }
         res.status(201).json({ id: results.insertId, title, description });
+    });
+});
+
+// delete task from database
+app.delete("/tasks/:id", (req, res) => {
+    const sql = "DELETE FROM tasks WHERE id = ?";
+    db.query(sql, [req.params.id], (err, results) => {
+        if (err) {
+            console.error("Error deleting task:", err);
+            res.status(500).json({ error: "Internal Server Error" });
+            return;
+        }
+        res.status(204).send();
+    });
+});
+
+// Update task in the database
+app.put("/tasks/:id", (req, res) => {
+    const { title, description } = req.body;
+    const sql = "UPDATE tasks SET title = ?, description = ? WHERE id = ?";
+    db.query(sql, [title, description, req.params.id], (err, results) => {
+        if (err) {
+            console.error("Error updating task:", err);
+            res.status(500).json({ error: "Internal Server Error" });
+            return;
+        }
+        res.status(200).json({ id: req.params.id, title, description });
     });
 });
 

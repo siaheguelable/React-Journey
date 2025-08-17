@@ -8,7 +8,7 @@ import {BrowserRouter,Routes,Route} from 'react-router-dom';
 
 function App() {
 
- const [task, setTask] = useState([]);      
+const [message, setMessage] = useState(""); // ✅ define it     
 
 
  const fetchData = async () => {

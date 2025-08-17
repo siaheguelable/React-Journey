@@ -3,7 +3,8 @@ import axios from "axios";
 
 function AddTask() {
   const [values, setValues] = useState({
-    title: ""
+    title: "",
+    description: ""
   });
   const [message, setMessage] = useState("");
 
@@ -26,9 +27,9 @@ function AddTask() {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Add a New Task"
+          placeholder="Add a title"
           style={{
-            width: "720px",
+            width: "320px",
             padding: "20px 12px",
             border: "1px solid #D1D5DB",
             borderRadius: "4px 0 0 4px",
@@ -38,6 +39,21 @@ function AddTask() {
           }}
           value={values.title}
           onChange={(e) => setValues({ ...values, title: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Add a Description"
+          style={{
+            width: "320px",
+            padding: "20px 12px",
+            border: "1px solid #D1D5DB",
+            borderRadius: "4px 0 0 4px",
+            outline: "none",
+            boxShadow: "0 0 0 2px rgba(59, 130, 246, 0.5)",
+            marginRight: "16px"
+          }}
+          value={values.description}
+          onChange={(e) => setValues({ ...values, description: e.target.value })}
         />
         <button
           style={{
