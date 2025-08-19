@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import PopupFormExample from "./popUpForm"; // Make sure this is the form popup
+import PopupForm  from "./popUpForm"; // Make sure this is the form popup
 
 function TaskCard({ task, onEdit, onDelete }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -85,9 +85,9 @@ function TaskCard({ task, onEdit, onDelete }) {
         </button>
       </div>
 
-      {/* Render PopupFormExample when isOpen = true */}
+      {/* Render PopupForm when isOpen = true */}
       {isOpen && (
-        <PopupFormExample
+        <PopupForm
           task={task} // pass current task so form is prefilled
           onClose={() => setIsOpen(false)}
           onSubmit={handleUpdate}

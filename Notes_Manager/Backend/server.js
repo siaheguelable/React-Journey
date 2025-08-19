@@ -90,6 +90,50 @@ app.put("/tasks/:id", (req, res) => {
     });
 });
 
+// user sign up api
+app.post("/users", (req, res) => {
+    const { username, email, password } = req.body;
+     // Quick validation
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const password_hash = (password); // Hash the password
+    const sql = "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
+    db.query(sql, [username, email, password_hash], (err, results) => {
+        if (err) {
+            console.error("Error creating user:", err);
+            res.status(500).json({ error: "Internal Server Error" });
+            return;
+        }
+        res.status(201).json({ id: results.insertId, username, email });
+    });
+});
+
+// check for sign in  if correct from the user show him is dasboard
+app.post("/users/login", (req, res) => {
+    const { username, password } = req.body;
+    console.log(req.body);
+    // Quick validation
+    if (!username || !password) {
+      return res.status(400).json({ message: "Username and password are required" });
+    }
+    const password_hash = (password); // Hash the password
+    const sql = "SELECT * FROM users WHERE username = ? AND password_hash = ?";
+    db.query(sql, [username, password_hash], (err, results) => {
+        if (err) {
+            console.error("Error logging in:", err);
+            res.status(500).json({ error: "Internal Server Error" });
+            return;
+        }
+        if (results.length === 0) {
+            return res.status(401).json({ message: "Invalid username or password" });
+        }
+        res.status(200).json({ message: "Login successful", user: results[0] });
+    });
+}); 
+
+
 // the environment variables
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || "development";
