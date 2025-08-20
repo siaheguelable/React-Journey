@@ -20,11 +20,12 @@ axios.get("http://localhost:5000/tasks")
 
       <h3>Task Card</h3>
       <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', listStyleType: 'none', padding: 10 }}>
-        {Array.isArray(tasks) && tasks.map(task => (
-          <li key={task.id} style={{padding: '12px', border: '1px solid #D1D5DB', borderRadius: '4px'}}>
-            <TaskCard task={task} />
-          </li>
-        ))}
+       
+       {Array.isArray(tasks) && tasks.map(task => (
+         <li key={task.id} style={{padding: '12px', border: '1px solid #D1D5DB', borderRadius: '4px'}}>
+           <TaskCard task={task} />
+         </li>
+       ))}
       </ul>
     </div>
   );

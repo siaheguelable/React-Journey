@@ -1,8 +1,10 @@
 import React from "react"; 
 import  Register from "./Register"; // Import the Register component
-import {Link} from "react-router-dom";
+import {Link,useNavigate} from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+
+import Dashboard from "./Dashboard"; // Import the Dashboard component
 const styles = {
   formContainer: {
     width: "400px",
@@ -40,17 +42,30 @@ const styles = {
 function SignInForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [token, setToken] = useState("");
+  
+  const navigate = useNavigate(); // initialize it
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const username = e.target.username.value;
     const password = e.target.password.value;
     try {
-      const response = await axios.post("http://localhost:5000/users", {
+      const response = await axios.post("http://localhost:5000/users/login", {
         username,
         password,
       });
+      
+      
+    // Correct way to store token in localStorage
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+
+    
       console.log("✅Login successful:", response.data);
+      // navigate to dashboard
+    navigate("/dashboard");
+        
     } catch (error) {
       console.error("❌ Error logging in:", error);
     }

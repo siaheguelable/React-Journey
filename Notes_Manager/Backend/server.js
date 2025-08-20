@@ -1,8 +1,12 @@
 import express from "express";
 import cors from "cors";
 import db from "./DB/connection.js"
-
+import 'dotenv/config';
+import jwt from 'jsonwebtoken';
 const app = express();
+
+
+
 
 const corsOptions = {
   origin: "http://localhost:5173",
@@ -113,25 +117,38 @@ app.post("/users", (req, res) => {
 // check for sign in  if correct from the user show him is dasboard
 app.post("/users/login", (req, res) => {
     const { username, password } = req.body;
-    console.log(req.body);
-    // Quick validation
+
     if (!username || !password) {
       return res.status(400).json({ message: "Username and password are required" });
     }
-    const password_hash = (password); // Hash the password
+
+    const password_hash = password; // Replace with hashing if needed
     const sql = "SELECT * FROM users WHERE username = ? AND password_hash = ?";
+
     db.query(sql, [username, password_hash], (err, results) => {
         if (err) {
             console.error("Error logging in:", err);
-            res.status(500).json({ error: "Internal Server Error" });
-            return;
+            return res.status(500).json({ error: "Internal Server Error" });
         }
+
         if (results.length === 0) {
             return res.status(401).json({ message: "Invalid username or password" });
         }
-        res.status(200).json({ message: "Login successful", user: results[0] });
+
+        const user = results[0];
+
+        // Generate a JWT token
+        const token = jwt.sign(
+            { id: user.id, username: user.username },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        // ✅ Send only one response
+        res.status(200).json({ message: "Login successful", user, token });
     });
-}); 
+});
+
 
 
 // the environment variables

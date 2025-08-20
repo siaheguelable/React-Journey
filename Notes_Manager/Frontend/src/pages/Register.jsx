@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
 const styles = {
   formContainer: {
@@ -45,6 +46,7 @@ function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = (e) => {
   e.preventDefault();
@@ -63,6 +65,7 @@ function Register() {
     console.log("Registration successful:", response.data);
     // Handle successful registration (e.g., redirect to login page)
     setMessage("✅ Registration successful! You can now log in.");
+    navigate("/login"); // Redirect to login page after successful registration
   })
   .catch(error => {
     console.error("There was an error registering:", error);
