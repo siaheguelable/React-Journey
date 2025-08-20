@@ -50,25 +50,33 @@ function SignInForm() {
     e.preventDefault();
     const username = e.target.username.value;
     const password = e.target.password.value;
-    try {
-      const response = await axios.post("http://localhost:5000/users/login", {
-        username,
-        password,
-      });
+    // try {
+    //   const response = await axios.post("http://localhost:5000/users/login", {
+    //     username,
+    //     password,
+    //   });
       
       
-    // Correct way to store token in localStorage
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("user", JSON.stringify(response.data.user));
+    // // Correct way to store token in localStorage
+    // localStorage.setItem("token", response.data.token);
+    // localStorage.setItem("user", JSON.stringify(response.data.user));
 
     
-      console.log("✅Login successful:", response.data);
-      // navigate to dashboard
-    navigate("/dashboard");
+    //   console.log("✅Login successful:", response.data);
+    //   // navigate to dashboard
+    // navigate("/dashboard");
         
-    } catch (error) {
-      console.error("❌ Error logging in:", error);
-    }
+    // } catch (error) {
+    //   console.error("❌ Error logging in:", error);
+    // }
+
+    axios.post("http://localhost:5000/login", { username, password })
+  .then((res) => {
+    localStorage.setItem("token", res.data.token);  // ✅ save token
+    localStorage.setItem("user", JSON.stringify(res.data.user));
+    navigate("/dashboard"); // go to dashboard
+  })
+  .catch(err => console.error("Login failed:", err));
   };
 
   return (
