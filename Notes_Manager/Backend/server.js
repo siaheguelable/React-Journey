@@ -31,20 +31,14 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// all the task from the db
-app.get("/tasks", (req, res) => {
-  const sql = "SELECT * FROM tasks"; // your tasks table
-  db.query(sql, (err, results) => {
+// Get the task from the db for a specific user
+app.get("/tasks", authenticateToken, (req, res) => {
+  const sql = "SELECT * FROM tasks WHERE user_id = ?";
+  db.query(sql, [req.user.id], (err, results) => {
     if (err) {
       console.error("Error fetching tasks:", err);
       return res.status(500).json({ error: "Database error" });
     }
-
-    if (results.length === 0) {
-      return res.status(404).json({ message: "No tasks found" });
-    }
-
-    // ✅ Send all tasks directly as an array
     res.json(results);
   });
 });
@@ -68,17 +62,17 @@ app.get("/tasks/:id", (req, res) => {
 });
 
 // Create a new task
-app.post("/tasks", (req, res) => {
-    const { title, description } = req.body;
-    const sql = "INSERT INTO tasks (title, description) VALUES (?, ?)";
-    db.query(sql, [title, description], (err, results) => {
-        if (err) {
-            console.error("Error creating task:", err);
-            res.status(500).json({ error: "Internal Server Error" });
-            return;
-        }
-        res.status(201).json({ id: results.insertId, title, description });
-    });
+app.post("/tasks", authenticateToken, (req, res) => {
+  const { title, description } = req.body;
+  const sql = "INSERT INTO tasks (title, description, user_id) VALUES (?, ?, ?)";
+  db.query(sql, [title, description, req.user.id], (err, results) => {
+    if (err) {
+      console.error("Error creating task:", err);
+      res.status(500).json({ error: "Internal Server Error" });
+      return;
+    }
+    res.status(201).json({ id: results.insertId, title, description });
+  });
 });
 
 // delete task from database

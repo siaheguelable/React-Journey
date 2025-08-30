@@ -2,7 +2,7 @@ import axios from 'axios';
 import{useState, useEffect} from 'react';
 import React from 'react';    
 import Dashboard from './pages/Dashboard';
-import Login from './pages/Login';
+import Login from './pages/login';
 import {BrowserRouter,Routes,Route,Link} from 'react-router-dom';
 import Register from './pages/Register';  
  

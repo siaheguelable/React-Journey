@@ -1,16 +1,42 @@
 import { useState } from "react";
 import axios from "axios";
+// define a addtask component to add a new task
 
 function AddTask() {
+  // define state for form values and message to hold message and set message later on
+  // latter on when when want to show success or error message
   const [values, setValues] = useState({
     title: "",
     description: ""
   });
-  const [message, setMessage] = useState("");
+  // define state for message to hold message and set message later on
 
+  const [message, setMessage] = useState("");
+  // define a handleSubmit function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post("http://localhost:5000/tasks", values)
+    // validate form
+    if (!values.title || !values.description) {
+      setMessage("❌ Please fill in all fields.");
+      return;
+    }
+    // get token from local storage
+    const token = localStorage.getItem("token");
+    // using axios to send a POST request to the backend 
+    axios.post(
+      "http://localhost:5000/tasks",
+      // send task data
+      { title: values.title, description: values.description },
+      {
+        // set content type to application/json
+
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          // add any other headers here
+        },
+      }
+    )
       .then(response => {
         console.log("Task added:", response.data);
         setMessage("✅ Task added successfully!");

@@ -6,4 +6,4 @@ function FruitsCounter({ fruits }) {
     )
 }
 
-export default FruitsCounter;
+export default FruitsCounte

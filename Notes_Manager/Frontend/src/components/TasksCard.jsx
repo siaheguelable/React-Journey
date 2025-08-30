@@ -4,10 +4,19 @@ import PopupForm  from "./popUpForm"; // Make sure this is the form popup
 
 function TaskCard({ task, onEdit, onDelete }) {
   const [isOpen, setIsOpen] = useState(false);
+  const token = localStorage.getItem("token");
 
   const handleUpdate = (updatedValues) => {
     axios
-      .put(`http://localhost:5000/tasks/${task.id}`, { ...task, ...updatedValues })
+      .put(
+        `http://localhost:5000/tasks/${task.id}`,
+        { ...task, ...updatedValues },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         console.log("Task updated:", response.data);
         onEdit(response.data); // Pass updated task back to parent
@@ -20,13 +29,39 @@ function TaskCard({ task, onEdit, onDelete }) {
 
   const deleteHandler = () => {
     axios
-      .delete(`http://localhost:5000/tasks/${task.id}`)
+      .delete(`http://localhost:5000/tasks/${task.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then(() => {
         console.log("Task deleted:", task.id);
         onDelete(task.id);
       })
       .catch((error) => {
         console.error("Error deleting task:", error);
+      });
+  };
+  // task completed button handler
+  const toggleCompleted = () => {
+    axios
+      .put(
+        `http://localhost:5000/tasks/${task.id}`,
+        { completed: !task.completed },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+
+          
+        }
+      )
+      .then((response) => {
+        console.log("Task updated:", response.data);
+        onEdit(response.data); // Pass updated task back to parent
+      })
+      .catch((error) => {
+        console.error("Error updating task:", error);
       });
   };
 
@@ -46,15 +81,18 @@ function TaskCard({ task, onEdit, onDelete }) {
       <div>
         <h3>{task.title || "Untitled"}</h3>
         <p>{task.description || "No description"}</p>
-        <p
-          style={{
-            fontSize: "14px",
-            color: task.completed ? "#4CAF50" : "#F44336",
+        <button onClick={toggleCompleted} style={{
+            padding: "8px 12px",
+                backgroundColor: task.completed ? "green" : "#F44336", // green if done, red if not
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
           }}
         >
-          {task.completed ? "Completed" : "Not Completed"}
-        </p>
-      </div>
+          {task.completed ? "Yes" : "No"} 
+        </button>
+        </div>
 
       <div style={{ display: "flex", gap: "8px" }}>
         <button

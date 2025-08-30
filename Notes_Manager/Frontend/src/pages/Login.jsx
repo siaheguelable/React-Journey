@@ -70,7 +70,7 @@ function SignInForm() {
     //   console.error("❌ Error logging in:", error);
     // }
 
-    axios.post("http://localhost:5000/login", { username, password })
+    axios.post("http://localhost:5000/users/login", { username, password })
   .then((res) => {
     localStorage.setItem("token", res.data.token);  // ✅ save token
     localStorage.setItem("user", JSON.stringify(res.data.user));
